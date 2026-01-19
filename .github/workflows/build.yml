@@ -14,3 +14,6 @@ jobs:
         with:
           args: |
             --target .
+            --aarch64
+            --armv7
+            --amd64
