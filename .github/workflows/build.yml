@@ -22,4 +22,4 @@ jobs:
             --armv7
             --aarch64
             --amd64
-            --target /data/airplay2
+            --target /data
