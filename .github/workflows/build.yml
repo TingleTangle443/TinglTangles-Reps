@@ -1,25 +1,16 @@
-name: Build Home Assistant Add-on (airplay2)
+name: Build Home Assistant Add-on
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Build airplay2 add-on
-        uses: home-assistant/builder@2024.03.5
+      - uses: actions/checkout@v4
+      - uses: home-assistant/builder@2024.03.5
         with:
           args: |
-            --path airplay2
-            --armhf
-            --armv7
-            --aarch64
-            --amd64
+            --all
