@@ -20,4 +20,4 @@ jobs:
           args: >
             --target .
             --aarch64
-            --no-push
+            --no-upload
