@@ -1,0 +1,22 @@
+name: Build Home Assistant Add-ons
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build add-ons
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Home Assistant Add-on Builder
+        uses: home-assistant/addon-builder@v2
+        with:
+          args: |
+            --all \
+            --target /data
