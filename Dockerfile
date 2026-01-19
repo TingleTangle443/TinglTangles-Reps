@@ -36,7 +36,7 @@ RUN apt update && apt install -y --no-install-recommends \
     automake \
     libtool \
     pkg-config \
-    ...
+    
 
 # ALAC
 RUN git clone https://github.com/mikebrady/alac.git \
