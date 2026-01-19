@@ -8,5 +8,5 @@
   "boot": "auto",
   "options": {},
   "schema": {},
-  "image": "ghcr.io/<TingleTangle443>/airplay2-{arch}"
+  "image": "ghcr.io/tingletangle443/airplay2-{arch}"
 }
