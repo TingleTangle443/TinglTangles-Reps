@@ -28,6 +28,15 @@ RUN apt update && apt install -y --no-install-recommends \
     libgcrypt-dev \
     libmosquitto-dev \
  && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y --no-install-recommends \
+    ca-certificates \
+    build-essential \
+    git \
+    autoconf \
+    automake \
+    libtool \
+    pkg-config \
+    ...
 
 # ALAC
 RUN git clone https://github.com/mikebrady/alac.git \
