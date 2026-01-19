@@ -2,8 +2,7 @@ name: Build Home Assistant Add-ons
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -11,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Build Home Assistant add-ons
-        uses: home-assistant/builder@2024.12.1
+      - name: Build add-ons
+        uses: home-assistant/builder@2024.03.5
         with:
           args: |
             --all \
