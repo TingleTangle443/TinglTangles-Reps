@@ -27,6 +27,8 @@ RUN apt update && apt install -y --no-install-recommends \
     uuid-dev \
     libgcrypt-dev \
     libmosquitto-dev \
+    libsndfile1-dev \
+    libpcre2-dev \
  && rm -rf /var/lib/apt/lists/*
 RUN apt update && apt install -y --no-install-recommends \
     ca-certificates \
