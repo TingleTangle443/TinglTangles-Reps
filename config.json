@@ -7,6 +7,5 @@
   "startup": "services",
   "boot": "auto",
   "options": {},
-  "schema": {},
-  "image": "ghcr.io/tingletangle443/airplay2-{arch}"
+  "schema": {}
 }
