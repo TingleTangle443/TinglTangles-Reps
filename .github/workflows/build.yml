@@ -1,20 +1,22 @@
-name: Build Home Assistant Add-ons
+name: Build Home Assistant Add-on (airplay2)
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Build add-ons
+      - name: Build airplay2 add-on
         uses: home-assistant/builder@2024.03.5
         with:
           args: |
-            --addon airplay2 \
+            --addon airplay2
             --target /data
