@@ -1,73 +1,104 @@
-# Trigger rebuild for MQTT-enabled shairport-sync
-FROM debian:bookworm-slim AS builder
-RUN apt update
-RUN apt -y install --no-install-recommends build-essential git systemd autoconf automake libtool \
-    libpopt-dev libconfig-dev libasound2-dev avahi-daemon libavahi-client-dev libssl-dev libsoxr-dev \
-    libplist-dev libsodium-dev libavutil-dev libpulse-dev libavcodec-dev libavformat-dev uuid-dev libgcrypt-dev xxd supervisor jq libmosquitto-dev
-RUN git config --global http.sslverify false
-
-RUN git clone https://github.com/mikebrady/alac.git \
-     && cd alac \
-     && autoreconf -i \
-     && ./configure \
-     && make \
-     && make install
-RUN cd .. \
-     && git clone https://github.com/mikebrady/nqptp.git \
-     && cd nqptp \
-     && autoreconf -fi \
-     && ./configure --with-systemd-startup \
-     && make \
-     && make install
-RUN cd .. \
-     && git clone https://github.com/mikebrady/shairport-sync.git \
-     && cd shairport-sync \
-     && autoreconf -fi \
-     && ./configure --sysconfdir=/etc --with-pa --with-mqtt-client --with-soxr --with-avahi --with-ssl=openssl --with-systemd --with-airplay-2 --with-apple-alac --with-alsa\
-     && make \
-     && make install
-
 #############################################
+# Builder stage
+#############################################
+FROM debian:bookworm-slim AS builder
 
-FROM debian:bookworm-slim
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt update
-RUN apt update && apt -y install --no-install-recommends \
+RUN apt update && apt install -y --no-install-recommends \
     build-essential \
+    git \
     autoconf \
     automake \
     libtool \
     pkg-config \
-    systemd \
-    avahi-daemon \
-    xxd \
-    jq \
-    mosquitto \
-    libavcodec-dev \
-    libsodium-dev \
-    libplist-dev \
-    libpulse-dev \
-    libavahi-client-dev \
-    libconfig-dev \
     libpopt-dev \
- && apt clean && rm -rf /var/lib/apt/lists/*
-RUN apt clean && rm -rf /var/lib/apt/lists/*
+    libconfig-dev \
+    libasound2-dev \
+    libavahi-client-dev \
+    libssl-dev \
+    libsoxr-dev \
+    libplist-dev \
+    libsodium-dev \
+    libavutil-dev \
+    libavcodec-dev \
+    libavformat-dev \
+    libpulse-dev \
+    uuid-dev \
+    libgcrypt-dev \
+    libmosquitto-dev \
+ && rm -rf /var/lib/apt/lists/*
 
+# ALAC
+RUN git clone https://github.com/mikebrady/alac.git \
+ && cd alac \
+ && autoreconf -i \
+ && ./configure \
+ && make \
+ && make install
+
+# nqptp
+RUN git clone https://github.com/mikebrady/nqptp.git \
+ && cd nqptp \
+ && autoreconf -fi \
+ && ./configure \
+ && make \
+ && make install
+
+# shairport-sync (AirPlay 2 + MQTT + ALSA)
+RUN git clone https://github.com/mikebrady/shairport-sync.git \
+ && cd shairport-sync \
+ && autoreconf -fi \
+ && ./configure \
+      --sysconfdir=/etc \
+      --with-alsa \
+      --with-mqtt-client \
+      --with-avahi \
+      --with-ssl=openssl \
+      --with-soxr \
+      --with-airplay-2 \
+      --with-apple-alac \
+ && make \
+ && make install
+
+#############################################
+# Runtime stage
+#############################################
+FROM debian:bookworm-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && apt install -y --no-install-recommends \
+    libasound2 \
+    libavahi-client3 \
+    libavcodec59 \
+    libavformat59 \
+    libavutil57 \
+    libpulse0 \
+    libsodium23 \
+    libconfig9 \
+    libpopt0 \
+    libssl3 \
+    libsoxr0 \
+    libplist3 \
+    libmosquitto1 \
+    dbus \
+ && rm -rf /var/lib/apt/lists/*
+
+# Binaries & libs aus dem Builder
 COPY --from=builder /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
-#COPY --from=builder /usr/local/share/man/man7 /usr/share/man/man7
 COPY --from=builder /usr/local/bin/nqptp /usr/local/bin/nqptp
-COPY --from=builder etc/shairport-sync.conf /etc/
-COPY --from=builder etc/shairport-sync.conf.sample /etc/
-COPY --from=builder /usr/local/lib/libalac.* /usr/lib/
+COPY --from=builder /usr/local/lib/libalac* /usr/lib/
 
-RUN mkdir -p /var/log/supervisor
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY apply-config.sh apply-config.sh
-COPY start-dbus.sh start-dbus.sh
+# Config & helper scripts
 COPY shairport-sync.conf /etc/shairport-sync.conf
-RUN apt update && apt -y install --no-install-recommends libasound2 \
- && apt clean && rm -rf /var/lib/apt/lists/*
-RUN apt -y install libasound2
-RUN chmod +x apply-config.sh
-RUN chmod +x start-dbus.sh
-CMD ["/usr/bin/supervisord"]
+COPY apply-config.sh /apply-config.sh
+COPY start-dbus.sh /start-dbus.sh
+
+RUN chmod +x /apply-config.sh /start-dbus.sh
+
+# Start:
+# - dbus (für avahi)
+# - nqptp (Timing für AirPlay 2)
+# - shairport-sync
+CMD ["/bin/sh", "-c", "/start-dbus.sh && nqptp & shairport-sync -c /etc/shairport-sync.conf"]
