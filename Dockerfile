@@ -32,9 +32,25 @@ RUN cd .. \
 FROM debian:bookworm-slim
 
 RUN apt update
-RUN apt -y install --no-install-recommends systemd avahi-daemon \
-    xxd jq mosquitto libavcodec-dev libsodium-dev \
-    libplist-dev libpulse-dev libavahi-client-dev libconfig-dev libpopt-dev
+RUN apt update && apt -y install --no-install-recommends \
+    build-essential \
+    autoconf \
+    automake \
+    libtool \
+    pkg-config \
+    systemd \
+    avahi-daemon \
+    xxd \
+    jq \
+    mosquitto \
+    libavcodec-dev \
+    libsodium-dev \
+    libplist-dev \
+    libpulse-dev \
+    libavahi-client-dev \
+    libconfig-dev \
+    libpopt-dev \
+ && apt clean && rm -rf /var/lib/apt/lists/*
 RUN apt clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
