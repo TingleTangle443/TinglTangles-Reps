@@ -1,3 +1,4 @@
+# Trigger rebuild for MQTT-enabled shairport-sync
 FROM debian:bookworm-slim AS builder
 RUN apt update
 RUN apt -y install --no-install-recommends build-essential git systemd autoconf automake libtool \
