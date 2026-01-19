@@ -2,8 +2,7 @@ name: Build Home Assistant Add-on (airplay2)
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -18,5 +17,4 @@ jobs:
         uses: home-assistant/builder@2024.03.5
         with:
           args: |
-            --addons airplay2
-            --target /data
+            --target /data/airplay2
