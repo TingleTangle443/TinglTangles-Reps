@@ -18,5 +18,5 @@ jobs:
         uses: home-assistant/builder@2024.03.5
         with:
           args: |
-            --addon airplay2
+            --addons airplay2
             --target /data
