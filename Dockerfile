@@ -5,7 +5,6 @@ FROM debian:bullseye AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# --- Build-Dependencies (ALLES was gebraucht wird) ---
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     build-essential \
@@ -18,50 +17,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gettext \
     flex \
     bison \
-    \
-    # Required tools
     xxd \
-    \
-    # pthread / basics
     libc6-dev \
-    \
-    # ALSA
     libasound2-dev \
     libsndfile1-dev \
-    \
-    # Avahi / mDNS
     libavahi-client-dev \
     libavahi-common-dev \
     libdaemon-dev \
-    avahi-daemon \
-    \
-    # Crypto / Apple
     libplist-dev \
     libsodium-dev \
     libgcrypt-dev \
     uuid-dev \
-    \
-    # DSP / Codec
     libsoxr-dev \
     libavcodec-dev \
     libavformat-dev \
     libavutil-dev \
-    \
-    # MQTT
     libmosquitto-dev \
     libpcre2-dev \
-    \
-    # Config
     libconfig-dev \
     libpopt-dev \
-    \
-    # SSL (REQUIRED!)
     libssl-dev \
  && rm -rf /var/lib/apt/lists/*
 
-# -------------------------------------------------
-# nqptp (AirPlay 2 timing)  ✅ pthread-fix
-# -------------------------------------------------
+# -------- nqptp (AirPlay 2 timing) --------
 RUN git clone https://github.com/mikebrady/nqptp.git \
  && cd nqptp \
  && autoreconf -fi \
@@ -69,9 +47,7 @@ RUN git clone https://github.com/mikebrady/nqptp.git \
  && make \
  && make install
 
-# -------------------------------------------------
-# shairport-sync (ALSA ONLY, NO PA)
-# -------------------------------------------------
+# -------- shairport-sync (ALSA only) --------
 RUN git clone https://github.com/mikebrady/shairport-sync.git \
  && cd shairport-sync \
  && autoreconf -fi \
@@ -86,7 +62,6 @@ RUN git clone https://github.com/mikebrady/shairport-sync.git \
       --without-pipewire \
  && make \
  && make install
-
 
 #############################################
 # Runtime stage
@@ -114,16 +89,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dbus \
  && rm -rf /var/lib/apt/lists/*
 
-# --- Binaries ---
-COPY --from=builder /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
-COPY --from=builder /usr/bin/nqptp /usr/local/bin/nqptp
+# -------- Binaries --------
+COPY --from=builder /usr/local/bin/shairport-sync /usr/bin/shairport-sync
+COPY --from=builder /usr/local/bin/nqptp /usr/bin/nqptp
 
-# --- Config & Scripts ---
-COPY shairport-sync.conf /etc/shairport-sync.conf
-COPY apply-config.sh /apply-config.sh
-COPY start-dbus.sh /start-dbus.sh
+# -------- Scripts --------
+COPY apply-config.sh /usr/bin/apply-config.sh
+COPY start-dbus.sh /usr/bin/start-dbus.sh
 
-RUN chmod +x /apply-config.sh /start-dbus.sh
+RUN chmod +x /usr/bin/apply-config.sh /usr/bin/start-dbus.sh
 
-# --- Start sequence ---
-CMD ["/bin/sh", "-c", "/apply-config.sh && /start-dbus.sh && nqptp & shairport-sync -c /etc/shairport-sync.conf"]
+# -------- Start --------
+CMD ["/bin/sh", "-c", "/usr/bin/apply-config.sh && /usr/bin/start-dbus.sh && /usr/bin/nqptp & shairport-sync -c /etc/shairport-sync.conf"]
