@@ -74,18 +74,22 @@ RUN git clone https://github.com/mikebrady/nqptp.git \
 RUN git clone https://github.com/mikebrady/shairport-sync.git \
  && cd shairport-sync \
  && autoreconf -fi \
- && ./configure \
-      --sysconfdir=/etc \
-      --with-alsa \
-      --with-avahi \
-      --with-airplay-2 \
-      --disable-pulseaudio \
-      --disable-pipewire \
-      --disable-jack \
- || ( \
-      echo "==== CONFIG.LOG ====" && \
-      find . -name config.log -exec cat {} \; && \
-      exit 1 \
+ && ( \
+      echo "=== START CONFIGURE ===" && \
+      ./configure \
+        --sysconfdir=/etc \
+        --with-alsa \
+        --with-avahi \
+        --with-airplay-2 \
+        --disable-pulseaudio \
+        --disable-pipewire \
+        --disable-jack \
+      > configure.out 2>&1 || ( \
+        echo "==== CONFIGURE FAILED - BEGIN configure.out ====" && \
+        sed -n '1,300p' configure.out && \
+        echo "==== CONFIGURE FAILED - END configure.out ====" && \
+        exit 1 \
+      ) \
     ) \
  && make \
  && make install
