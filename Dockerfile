@@ -39,7 +39,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
  && rm -rf /var/lib/apt/lists/*
 
-# -------- nqptp (AirPlay 2 timing) --------
+# -------- nqptp --------
 RUN git clone https://github.com/mikebrady/nqptp.git \
  && cd nqptp \
  && autoreconf -fi \
@@ -47,11 +47,11 @@ RUN git clone https://github.com/mikebrady/nqptp.git \
  && make \
  && make install
 
-# -------- shairport-sync (ALSA only) --------
+# -------- shairport-sync (ALSA, AirPlay2, MQTT-ready) --------
 RUN git clone https://github.com/mikebrady/shairport-sync.git \
  && cd shairport-sync \
  && autoreconf -fi \
- && ./configure \
+ && ac_cv_header_stdint_h=yes ./configure \
       --sysconfdir=/etc \
       --with-alsa \
       --with-avahi \
