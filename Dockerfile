@@ -1,7 +1,7 @@
 #############################################
 # Builder stage
 #############################################
-FROM debian:bookworm-slim AS builder
+FROM debian:bullseye-slim AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -86,7 +86,7 @@ RUN git clone https://github.com/mikebrady/shairport-sync.git \
 #############################################
 # Runtime stage
 #############################################
-FROM debian:bookworm-slim
+FROM debian:bullseye-slim
 
 ENV DEBIAN_FRONTEND=noninteractive
 
