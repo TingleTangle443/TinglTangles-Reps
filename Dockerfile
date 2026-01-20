@@ -35,6 +35,7 @@ RUN apt update && apt install -y --no-install-recommends \
     libavahi-common-dev \
     libavahi-compat-libdnssd-dev \
     libdaemon-dev \
+    libevent-dev \
     \
     # Codec / DSP
     libavcodec-dev \
