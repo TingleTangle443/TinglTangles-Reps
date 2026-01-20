@@ -78,7 +78,6 @@ RUN git clone https://github.com/mikebrady/shairport-sync.git \
       --sysconfdir=/etc \
       --with-alsa \
       --with-avahi \
-      --with-mdns=avahi \
       --with-airplay-2 \
       --with-ssl=openssl \
  && make \
