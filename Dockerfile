@@ -21,25 +21,21 @@ RUN apt update && apt install -y --no-install-recommends \
     gettext \
     flex \
     bison \
-    libdaemon-dev \
-    libpcre2-dev \
     \
-    # Core audio
+    # Audio (ALSA)
     libasound2-dev \
-    libpulse-dev \
     libsndfile1-dev \
     \
-    # AirPlay / Apple
+    # Apple / Crypto
     libplist-dev \
     libsodium-dev \
     libgcrypt-dev \
     uuid-dev \
     \
-    # Avahi / Zeroconf
+    # Avahi / Zeroconf (NUR DEV!)
     libavahi-client-dev \
     libavahi-common-dev \
     libdaemon-dev \
-    avahi-daemon \
     \
     # Codec / DSP
     libavcodec-dev \
@@ -49,42 +45,19 @@ RUN apt update && apt install -y --no-install-recommends \
     \
     # MQTT
     libmosquitto-dev \
-    \
-    # Config / parsing
-    libconfig-dev \
-    libpopt-dev \
     libpcre2-dev \
     \
-    # SSL / crypto
+    # Config / Parsing
+    libconfig-dev \
+    libpopt-dev \
+    \
+    # SSL
     libssl-dev \
     \
     # Helfer
     jq \
     xxd \
  && rm -rf /var/lib/apt/lists/*
-
-# nqptp
-RUN git clone https://github.com/mikebrady/nqptp.git \
- && cd nqptp \
- && autoreconf -fi \
- && ./configure --without-systemd \
- && make \
- && make install
-
-# shairport-sync
-RUN git clone https://github.com/mikebrady/shairport-sync.git \
- && cd shairport-sync \
- && autoreconf -fi \
- && ./configure \
-      --sysconfdir=/etc \
-      --with-alsa \
-      --with-mqtt-client \
-      --with-avahi \
-      --with-ssl=openssl \
-      --with-soxr \
-      --with-airplay-2 \
- && make \
- && make install
 
 #############################################
 # Runtime stage
