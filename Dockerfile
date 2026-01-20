@@ -104,6 +104,7 @@ RUN apt update && apt install -y --no-install-recommends \
     libplist3 \
     libmosquitto1 \
     libsndfile1 \
+    procps \
     dbus \
  && rm -rf /var/lib/apt/lists/*
 
