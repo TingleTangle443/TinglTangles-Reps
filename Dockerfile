@@ -83,8 +83,8 @@ RUN apt update && apt install -y --no-install-recommends \
     dbus \
  && rm -rf /var/lib/apt/lists/*
 
-# Binaries & libs aus dem Builder
-COPY --from=builder /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
+# Binaries aus dem Builder
+COPY --from=builder /usr/bin/shairport-sync /usr/local/bin/shairport-sync
 COPY --from=builder /usr/bin/nqptp /usr/local/bin/nqptp
 
 # Config & helper scripts
