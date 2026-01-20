@@ -116,7 +116,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # --- Binaries ---
 COPY --from=builder /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
-COPY --from=builder /usr/local/bin/nqptp /usr/local/bin/nqptp
+COPY --from=builder /usr/bin/nqptp /usr/local/bin/nqptp
 
 # --- Config & Scripts ---
 COPY shairport-sync.conf /etc/shairport-sync.conf
