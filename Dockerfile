@@ -5,11 +5,9 @@ FROM debian:bookworm-slim AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# ALLE Build-Dependencies – EINMAL
+# Build-Dependencies
 RUN apt update && apt install -y --no-install-recommends \
     ca-certificates \
-    \
-    # Toolchain / Autotools
     build-essential \
     git \
     autoconf \
@@ -32,7 +30,7 @@ RUN apt update && apt install -y --no-install-recommends \
     libgcrypt-dev \
     uuid-dev \
     \
-    # Avahi / Zeroconf (NUR DEV!)
+    # Avahi / Zeroconf (DEV only)
     libavahi-client-dev \
     libavahi-common-dev \
     libdaemon-dev \
@@ -54,11 +52,36 @@ RUN apt update && apt install -y --no-install-recommends \
     # SSL
     libssl-dev \
     \
-    # Helfer
     jq \
     xxd \
  && rm -rf /var/lib/apt/lists/*
 
+# -------------------------------------------------
+# nqptp (AirPlay 2 timing)
+# -------------------------------------------------
+RUN git clone https://github.com/mikebrady/nqptp.git \
+ && cd nqptp \
+ && autoreconf -fi \
+ && ./configure --without-systemd --prefix=/usr/local \
+ && make \
+ && make install
+
+# -------------------------------------------------
+# shairport-sync (AirPlay 2 + MQTT + ALSA)
+# -------------------------------------------------
+RUN git clone https://github.com/mikebrady/shairport-sync.git \
+ && cd shairport-sync \
+ && autoreconf -fi \
+ && ./configure \
+      --sysconfdir=/etc \
+      --with-alsa \
+      --with-mqtt-client \
+      --with-avahi \
+      --with-ssl=openssl \
+      --with-soxr \
+      --with-airplay-2 \
+ && make \
+ && make install
 #############################################
 # Runtime stage
 #############################################
