@@ -94,13 +94,13 @@ RUN apt update && apt install -y --no-install-recommends \
     libasound2 \
     libavahi-client3 \
     libdaemon0 \
-    libavcodec59 \
-    libavformat59 \
-    libavutil57 \
-    libsodium23 \
+    libavcodec \
+    libavformat \
+    libavutil \
+    libsodium \
     libconfig9 \
     libpopt0 \
-    libssl3 \
+    libssl1.1 \
     libsoxr0 \
     libplist3 \
     libmosquitto1 \
