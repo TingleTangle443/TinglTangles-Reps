@@ -52,7 +52,7 @@ RUN git clone https://github.com/mikebrady/alac.git \
 RUN git clone https://github.com/mikebrady/nqptp.git \
  && cd nqptp \
  && autoreconf -fi \
- && ./configure \
+ && ./configure --without-systemd \
  && make \
  && make install
 
