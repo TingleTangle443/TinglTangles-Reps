@@ -5,21 +5,22 @@ FROM debian:bullseye AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# -------- Build Dependencies (bewusst vollständig) --------
 RUN apt update && apt install -y \
     ca-certificates \
     build-essential \
+    gcc \
+    g++ \
+    make \
     git \
     autoconf \
     automake \
     libtool \
     pkg-config \
-    m4 \
-    gettext \
-    flex \
-    bison \
     \
-    # Audio / ALSA
+    # glibc / pthread (WICHTIG für nqptp)
+    libc6-dev \
+    \
+    # Audio
     libasound2-dev \
     libsndfile1-dev \
     \
@@ -44,15 +45,12 @@ RUN apt update && apt install -y \
     libmosquitto-dev \
     libpcre2-dev \
     \
-    # Config
+    # Config / Parsing
     libconfig-dev \
     libpopt-dev \
     \
-    # SSL (Pflicht!)
+    # SSL
     libssl-dev \
-    \
-    jq \
-    xxd \
  && rm -rf /var/lib/apt/lists/*
 
 # -------- nqptp (AirPlay 2 Timing) --------
