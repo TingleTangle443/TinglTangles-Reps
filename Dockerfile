@@ -1,12 +1,14 @@
 #############################################
 # Builder stage
 #############################################
-FROM debian:bullseye-slim AS builder
+FROM debian:bullseye
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Build-Dependencies
-RUN apt update && apt install -y --no-install-recommends \
+# -------------------------------------------------
+# Build dependencies (bewusst vollständig)
+# -------------------------------------------------
+RUN apt update && apt install -y \
     ca-certificates \
     build-essential \
     git \
@@ -20,24 +22,22 @@ RUN apt update && apt install -y --no-install-recommends \
     flex \
     bison \
     \
-    # Audio (ALSA)
+    # Audio / ALSA
     libasound2-dev \
     libsndfile1-dev \
     \
-    # Apple / Crypto
+    # Avahi / mDNS
+    libavahi-client-dev \
+    libavahi-common-dev \
+    libdaemon-dev \
+    \
+    # Crypto / Apple
     libplist-dev \
     libsodium-dev \
     libgcrypt-dev \
     uuid-dev \
     \
-    # Avahi / Zeroconf (DEV only)
-    libavahi-client-dev \
-    libavahi-common-dev \
-    libavahi-compat-libdnssd-dev \
-    libdaemon-dev \
-    libevent-dev \
-    \
-    # Codec / DSP
+    # Codec / DSP (ffmpeg 4.x)
     libavcodec-dev \
     libavformat-dev \
     libavutil-dev \
@@ -45,15 +45,15 @@ RUN apt update && apt install -y --no-install-recommends \
     \
     # MQTT
     libmosquitto-dev \
-    libpcre2-dev \
     \
-    # Config / Parsing
+    # Config / CLI
     libconfig-dev \
     libpopt-dev \
     \
-    # SSL
+    # SSL (Bullseye!)
     libssl-dev \
     \
+    # Helfer
     jq \
     xxd \
  && rm -rf /var/lib/apt/lists/*
@@ -69,7 +69,7 @@ RUN git clone https://github.com/mikebrady/nqptp.git \
  && make install
 
 # -------------------------------------------------
-# shairport-sync (AirPlay 2 + MQTT + ALSA)
+# shairport-sync (ALSA + MQTT + Avahi + AirPlay 2)
 # -------------------------------------------------
 RUN git clone https://github.com/mikebrady/shairport-sync.git \
  && cd shairport-sync \
@@ -78,7 +78,9 @@ RUN git clone https://github.com/mikebrady/shairport-sync.git \
       --sysconfdir=/etc \
       --with-alsa \
       --with-avahi \
+      --with-mdns=avahi \
       --with-airplay-2 \
+      --with-mqtt-client \
       --with-ssl=openssl \
  && make \
  && make install
@@ -91,13 +93,14 @@ FROM debian:bullseye-slim
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && apt install -y --no-install-recommends \
+    ca-certificates \
     libasound2 \
     libavahi-client3 \
     libdaemon0 \
-    libavcodec \
-    libavformat \
-    libavutil \
-    libsodium \
+    libavcodec58 \
+    libavformat58 \
+    libavutil56 \
+    libsodium23 \
     libconfig9 \
     libpopt0 \
     libssl1.1 \
