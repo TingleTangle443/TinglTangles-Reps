@@ -1,7 +1,9 @@
-name: "AirPlay 2 for Home Assistant"
-description: "AirPlay 2 receiver using shairport-sync (ALSA + MQTT)"
+name: "AirPlay 2 (ALSA + MQTT)"
+description: "AirPlay 2 receiver for Home Assistant using shairport-sync with ALSA and MQTT"
 version: "1.0.0"
 slug: "airplay2"
+url: "https://github.com/tingletangle443/airplay2"
+init: false
 
 arch:
   - armv7
@@ -13,7 +15,7 @@ audio: true
 
 options:
   airplay_name: "Home Assistant AirPlay"
-  alsa_device: "hw:0,0"
+  alsa_device: "hw:1,0"
   latency: 88200
   interpolation: "soxr"
   mqtt_host: "core-mosquitto"
