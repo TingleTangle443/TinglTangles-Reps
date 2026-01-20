@@ -3,18 +3,23 @@ set -e
 
 CONFIG_FILE="/etc/shairport-sync.conf"
 
-echo "[INFO] Generating shairport-sync.conf"
+echo "[INFO] Recreating shairport-sync.conf (ALSA only)"
+
+# Alte Konfig kompromisslos entfernen
+rm -f /etc/shairport-sync.conf
+rm -f /etc/shairport-sync.conf.sample
 
 # Werte aus Home Assistant
 AIRPLAY_NAME="${airplay_name:-Home Assistant AirPlay}"
-ALSA_DEVICE="${alsa_device:-hw:0,0}"
+ALSA_DEVICE="${alsa_device:-hw:1,0}"
+
 MQTT_HOST="${mqtt_host:-}"
 MQTT_PORT="${mqtt_port:-1883}"
 MQTT_USERNAME="${mqtt_username:-}"
 MQTT_PASSWORD="${mqtt_password:-}"
 MQTT_TOPIC="${mqtt_topic:-shairport-sync}"
 
-# Datei neu erzeugen
+# Neue Config schreiben (ALSA ONLY)
 cat > "$CONFIG_FILE" <<EOF
 general =
 {
@@ -54,7 +59,7 @@ cat >> "$CONFIG_FILE" <<EOF
 EOF
 fi
 
-echo "[INFO] shairport-sync.conf created:"
+echo "[INFO] Final shairport-sync.conf:"
 echo "---------------------------------"
 cat "$CONFIG_FILE"
 echo "---------------------------------"
