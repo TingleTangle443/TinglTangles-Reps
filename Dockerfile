@@ -77,10 +77,7 @@ RUN git clone https://github.com/mikebrady/shairport-sync.git \
  && ( ./configure \
       --sysconfdir=/etc \
       --with-alsa \
-      --with-mqtt-client \
       --with-avahi \
-      --with-ssl=openssl \
-      --with-soxr \
       --with-airplay-2 \
     || (cat config.log && exit 1) ) \
  && make \
