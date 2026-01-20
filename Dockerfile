@@ -125,5 +125,4 @@ RUN chmod +x /apply-config.sh /start-dbus.sh
 # - dbus (für avahi)
 # - nqptp (Timing für AirPlay 2)
 # - shairport-sync
-CMD ["/bin/sh", "-c", "/start-dbus.sh && nqptp & shairport-sync -c /etc/shairport-sync.conf"]
 CMD ["/bin/sh", "-c", "/apply-config.sh && /start-dbus.sh && nqptp & shairport-sync -c /etc/shairport-sync.conf"]
