@@ -74,21 +74,13 @@ RUN git clone https://github.com/mikebrady/nqptp.git \
 RUN git clone https://github.com/mikebrady/shairport-sync.git \
  && cd shairport-sync \
  && autoreconf -fi \
- && ( \
-      echo "=== START CONFIGURE ===" && \
-      ./configure \
-        --sysconfdir=/etc \
-        --with-alsa \
-        --with-avahi \
-        --with-airplay-2 \
-        --with-ssl=openssl \
-      > configure.out 2>&1 || ( \
-        echo "==== CONFIGURE FAILED - BEGIN configure.out ====" && \
-        sed -n '1,300p' configure.out && \
-        echo "==== CONFIGURE FAILED - END configure.out ====" && \
-        exit 1 \
-      ) \
-    ) \
+ && ./configure \
+      --sysconfdir=/etc \
+      --with-alsa \
+      --with-avahi \
+      --with-mdns=avahi \
+      --with-airplay-2 \
+      --with-ssl=openssl \
  && make \
  && make install
  
