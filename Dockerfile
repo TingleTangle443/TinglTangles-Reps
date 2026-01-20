@@ -81,9 +81,7 @@ RUN git clone https://github.com/mikebrady/shairport-sync.git \
         --with-alsa \
         --with-avahi \
         --with-airplay-2 \
-        --disable-pulseaudio \
-        --disable-pipewire \
-        --disable-jack \
+        --with-ssl=openssl \
       > configure.out 2>&1 || ( \
         echo "==== CONFIGURE FAILED - BEGIN configure.out ====" && \
         sed -n '1,300p' configure.out && \
