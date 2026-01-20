@@ -7,7 +7,7 @@ arch:
   - armv7
   - aarch64
 
-boot: auto
+boot: manual
 host_network: true
 audio: true
 
