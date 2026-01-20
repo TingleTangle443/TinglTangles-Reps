@@ -61,14 +61,6 @@ RUN apt update && apt install -y --no-install-recommends \
     xxd \
  && rm -rf /var/lib/apt/lists/*
 
-# ALAC
-RUN git clone https://github.com/mikebrady/alac.git \
- && cd alac \
- && autoreconf -i \
- && ./configure \
- && make \
- && make install
-
 # nqptp
 RUN git clone https://github.com/mikebrady/nqptp.git \
  && cd nqptp \
@@ -120,7 +112,6 @@ RUN apt update && apt install -y --no-install-recommends \
 # Binaries & libs aus dem Builder
 COPY --from=builder /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
 COPY --from=builder /usr/local/bin/nqptp /usr/local/bin/nqptp
-COPY --from=builder /usr/local/lib/libalac* /usr/lib/
 
 # Config & helper scripts
 COPY shairport-sync.conf /etc/shairport-sync.conf
