@@ -5,40 +5,61 @@ FROM debian:bookworm-slim AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt update && apt install -y --no-install-recommends \
-    build-essential \
-    git \
-    autoconf \
-    automake \
-    libtool \
-    pkg-config \
-    libpopt-dev \
-    libconfig-dev \
-    libasound2-dev \
-    libavahi-client-dev \
-    libssl-dev \
-    libsoxr-dev \
-    libplist-dev \
-    libsodium-dev \
-    libavutil-dev \
-    libavcodec-dev \
-    libavformat-dev \
-    libpulse-dev \
-    uuid-dev \
-    libgcrypt-dev \
-    libmosquitto-dev \
-    libsndfile1-dev \
-    libpcre2-dev \
- && rm -rf /var/lib/apt/lists/*
+# ALLE Build-Dependencies – EINMAL
 RUN apt update && apt install -y --no-install-recommends \
     ca-certificates \
+    \
+    # Toolchain / Autotools
     build-essential \
     git \
     autoconf \
     automake \
     libtool \
+    libtool-bin \
     pkg-config \
- && rm -rf /var/lib/apt/lists/* 
+    m4 \
+    gettext \
+    flex \
+    bison \
+    \
+    # Core audio
+    libasound2-dev \
+    libpulse-dev \
+    libsndfile1-dev \
+    \
+    # AirPlay / Apple
+    libplist-dev \
+    libsodium-dev \
+    libgcrypt-dev \
+    uuid-dev \
+    \
+    # Avahi / Zeroconf
+    libavahi-client-dev \
+    libavahi-common-dev \
+    libdaemon-dev \
+    avahi-daemon \
+    \
+    # Codec / DSP
+    libavcodec-dev \
+    libavformat-dev \
+    libavutil-dev \
+    libsoxr-dev \
+    \
+    # MQTT
+    libmosquitto-dev \
+    \
+    # Config / parsing
+    libconfig-dev \
+    libpopt-dev \
+    libpcre2-dev \
+    \
+    # SSL / crypto
+    libssl-dev \
+    \
+    # Helfer
+    jq \
+    xxd \
+ && rm -rf /var/lib/apt/lists/*
 
 # ALAC
 RUN git clone https://github.com/mikebrady/alac.git \
@@ -56,7 +77,7 @@ RUN git clone https://github.com/mikebrady/nqptp.git \
  && make \
  && make install
 
-# shairport-sync (AirPlay 2 + MQTT + ALSA)
+# shairport-sync
 RUN git clone https://github.com/mikebrady/shairport-sync.git \
  && cd shairport-sync \
  && autoreconf -fi \
