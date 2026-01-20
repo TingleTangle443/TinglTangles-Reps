@@ -33,6 +33,7 @@ RUN apt update && apt install -y --no-install-recommends \
     # Avahi / Zeroconf (DEV only)
     libavahi-client-dev \
     libavahi-common-dev \
+    libavahi-compat-libdnssd-dev \
     libdaemon-dev \
     \
     # Codec / DSP
@@ -72,7 +73,7 @@ RUN git clone https://github.com/mikebrady/nqptp.git \
 RUN git clone https://github.com/mikebrady/shairport-sync.git \
  && cd shairport-sync \
  && autoreconf -fi \
- && ./configure \
+ && ( ./configure \
       --sysconfdir=/etc \
       --with-alsa \
       --with-mqtt-client \
@@ -80,6 +81,7 @@ RUN git clone https://github.com/mikebrady/shairport-sync.git \
       --with-ssl=openssl \
       --with-soxr \
       --with-airplay-2 \
+    || (cat config.log && exit 1) ) \
  && make \
  && make install
 #############################################
