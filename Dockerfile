@@ -21,6 +21,8 @@ RUN apt update && apt install -y --no-install-recommends \
     gettext \
     flex \
     bison \
+    libdaemon-dev \
+    libpcre2-dev \
     \
     # Core audio
     libasound2-dev \
