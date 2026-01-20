@@ -3,6 +3,8 @@
 CONFIG="/data/options.json"
 CONF_FILE="/etc/shairport-sync.conf"
 
+echo "Generating shairport-sync.conf from Home Assistant options..."
+
 AIRPLAY_NAME=$(jq -r '.airplay_name' "$CONFIG")
 ALSA_DEVICE=$(jq -r '.alsa_device' "$CONFIG")
 LATENCY=$(jq -r '.latency' "$CONFIG")
@@ -27,7 +29,6 @@ audio_backend = "alsa";
 alsa =
 {
   output_device = "$ALSA_DEVICE";
-  mixer_control_name = "PCM";
 };
 
 mqtt =
