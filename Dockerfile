@@ -81,7 +81,6 @@ RUN git clone https://github.com/mikebrady/shairport-sync.git \
       --with-ssl=openssl \
       --with-soxr \
       --with-airplay-2 \
-      --with-apple-alac \
  && make \
  && make install
 
