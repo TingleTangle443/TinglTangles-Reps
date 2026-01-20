@@ -17,8 +17,11 @@ RUN apt update && apt install -y \
     libtool \
     pkg-config \
     \
-    # glibc / pthread (WICHTIG für nqptp)
+    # glibc / pthread (wichtig für nqptp)
     libc6-dev \
+    \
+    # REQUIRED for AirPlay 2 (xxd!)
+    vim-common \
     \
     # Audio
     libasound2-dev \
