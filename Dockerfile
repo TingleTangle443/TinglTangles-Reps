@@ -92,10 +92,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && apt install -y --no-install-recommends \
     libasound2 \
     libavahi-client3 \
+    libdaemon0 \
     libavcodec59 \
     libavformat59 \
     libavutil57 \
-    libpulse0 \
     libsodium23 \
     libconfig9 \
     libpopt0 \
@@ -103,12 +103,13 @@ RUN apt update && apt install -y --no-install-recommends \
     libsoxr0 \
     libplist3 \
     libmosquitto1 \
+    libsndfile1 \
     dbus \
  && rm -rf /var/lib/apt/lists/*
 
 # Binaries aus dem Builder
-COPY --from=builder /usr/bin/shairport-sync /usr/local/bin/shairport-sync
-COPY --from=builder /usr/bin/nqptp /usr/local/bin/nqptp
+COPY --from=builder /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
+COPY --from=builder /usr/local/bin/nqptp /usr/local/bin/nqptp
 
 # Config & helper scripts
 COPY shairport-sync.conf /etc/shairport-sync.conf
