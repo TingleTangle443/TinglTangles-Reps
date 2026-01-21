@@ -27,5 +27,5 @@ jobs:
           docker run --rm \
             -v "${{ github.workspace }}:/data" \
             -e GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-            ghcr.io/home-assistant/builder:2024.03.5 \
+            ghcr.io/home-assistant/amd64-builder:2024.03.5 \
             /usr/bin/builder.sh --addon airplay2
