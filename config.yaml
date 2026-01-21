@@ -1,6 +1,6 @@
 name: "AirPlay 2 (ALSA + MQTT)"
 description: "AirPlay 2 receiver for Home Assistant using shairport-sync with ALSA and MQTT"
-version: "1.0.0"
+version: "dev"
 slug: "airplay2"
 url: "https://github.com/tingletangle443/airplay2"
 init: false
@@ -35,4 +35,4 @@ schema:
   mqtt_password: password?
   mqtt_topic: str
 
-image: "ghcr.io/tingletangle443/airplay2-{arch}"
+image: "ghcr.io/tingletangle443/airplay2-{arch}:dev"
