@@ -5,6 +5,7 @@ FROM debian:bullseye AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# ---- Build Dependencies (vollständig, geprüft) ----
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     build-essential \
@@ -18,28 +19,45 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     flex \
     bison \
     xxd \
+    \
+    # pthread (KRITISCH für nqptp!)
     libc6-dev \
+    libpthread-stubs0-dev \
+    \
+    # ALSA
     libasound2-dev \
     libsndfile1-dev \
+    \
+    # Avahi / mDNS
     libavahi-client-dev \
     libavahi-common-dev \
     libdaemon-dev \
+    \
+    # Apple / Crypto
     libplist-dev \
     libsodium-dev \
     libgcrypt-dev \
     uuid-dev \
+    \
+    # DSP / Codec
     libsoxr-dev \
     libavcodec-dev \
     libavformat-dev \
     libavutil-dev \
+    \
+    # MQTT
     libmosquitto-dev \
     libpcre2-dev \
+    \
+    # Config
     libconfig-dev \
     libpopt-dev \
+    \
+    # SSL
     libssl-dev \
  && rm -rf /var/lib/apt/lists/*
 
-# -------- nqptp --------
+# -------- nqptp (AirPlay 2 Timing) --------
 RUN git clone https://github.com/mikebrady/nqptp.git \
  && cd nqptp \
  && autoreconf -fi \
@@ -47,11 +65,11 @@ RUN git clone https://github.com/mikebrady/nqptp.git \
  && make \
  && make install
 
-# -------- shairport-sync (ALSA, AirPlay2, MQTT-ready) --------
+# -------- shairport-sync (ALSA ONLY, AirPlay 2) --------
 RUN git clone https://github.com/mikebrady/shairport-sync.git \
  && cd shairport-sync \
  && autoreconf -fi \
- && ac_cv_header_stdint_h=yes ./configure \
+ && ./configure \
       --sysconfdir=/etc \
       --with-alsa \
       --with-avahi \
@@ -62,6 +80,7 @@ RUN git clone https://github.com/mikebrady/shairport-sync.git \
       --without-pipewire \
  && make \
  && make install
+
 
 #############################################
 # Runtime stage
@@ -89,20 +108,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dbus \
  && rm -rf /var/lib/apt/lists/*
 
-# -------- Binaries --------
-COPY --from=builder /usr/local/bin/shairport-sync /usr/bin/shairport-sync
+# ---- Binaries ----
 COPY --from=builder /usr/local/bin/nqptp /usr/local/bin/nqptp
+COPY --from=builder /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
 
-# -------- Scripts --------
-COPY apply-config.sh /usr/bin/apply-config.sh
-COPY start-dbus.sh /usr/bin/start-dbus.sh
+# ---- Config & Scripts ----
+COPY apply-config.sh /apply-config.sh
+COPY start-dbus.sh /start-dbus.sh
 
-RUN chmod +x /usr/bin/apply-config.sh /usr/bin/start-dbus.sh
+RUN chmod +x /apply-config.sh /start-dbus.sh
 
-# -------- Check --------
-RUN which nqptp && nqptp --version || true
-
-# -------- Start --------
+# ---- Start (KEIN & , KEIN Race Condition) ----
 CMD ["/bin/sh", "-c", "\
 /apply-config.sh && \
 /start-dbus.sh && \
