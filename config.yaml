@@ -35,4 +35,4 @@ schema:
   mqtt_password: password?
   mqtt_topic: str
 
-image: "ghcr.io/tingletangle443/airplay2-{arch}:dev"
+image: "ghcr.io/tingletangle443/airplay2-{arch}
