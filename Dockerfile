@@ -107,17 +107,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dbus \
  && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /usr/local/bin/nqptp /usr/local/bin/nqptp
+# --- Binaries ---
 COPY --from=builder /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
+COPY --from=builder /usr/local/bin/nqptp /usr/local/bin/nqptp
 
-COPY apply-config.sh /apply-config.sh
-COPY start-dbus.sh /start-dbus.sh
+# --- Config & Scripts ---
+COPY apply-config.sh /usr/local/bin/apply-config.sh
+COPY start-dbus.sh /usr/local/bin/start-dbus.sh
 
-RUN chmod +x /apply-config.sh /start-dbus.sh
+RUN chmod +x /usr/local/bin/apply-config.sh /usr/local/bin/start-dbus.sh
 
-CMD ["/bin/sh", "-c", "\
-/apply-config.sh && \
-/start-dbus.sh && \
-nqptp && \
-exec shairport-sync -c /etc/shairport-sync.conf \
-"]
+# --- Start ---
+CMD ["/bin/sh", "-c", "/usr/local/bin/apply-config.sh && /usr/local/bin/start-dbus.sh && /usr/local/bin/nqptp & /usr/local/bin/shairport-sync -c /etc/shairport-sync.conf"]
