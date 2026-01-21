@@ -107,11 +107,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dbus \
  && rm -rf /var/lib/apt/lists/*
 
-# --- Binaries ---
-COPY --from=builder /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
-COPY --from=builder /usr/local/bin/nqptp /usr/local/bin/nqptp
-
-# --- Config & Scripts ---
+## --- Config & Scripts ---
 COPY apply-config.sh /usr/local/bin/apply-config.sh
 COPY start-dbus.sh /usr/local/bin/start-dbus.sh
 
