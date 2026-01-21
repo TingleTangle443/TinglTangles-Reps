@@ -15,17 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Login to GHCR
+      - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build airplay2 addon
-        run: |
-          docker run --rm \
-            -v "${{ github.workspace }}:/data" \
-            -e GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-            ghcr.io/home-assistant/amd64-builder:2024.03.5 \
-            /usr/bin/builder.sh --addon airplay2
+      - name: Build Add-on
+        uses: home-assistant/builder@2024.03.5
+        with:
+          args: |
+            --addon airplay2
+            --target aarch64
