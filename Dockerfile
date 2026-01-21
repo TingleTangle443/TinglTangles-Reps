@@ -100,4 +100,10 @@ COPY start-dbus.sh /usr/bin/start-dbus.sh
 RUN chmod +x /usr/bin/apply-config.sh /usr/bin/start-dbus.sh
 
 # -------- Start --------
-CMD ["/bin/sh", "-c", "/usr/bin/apply-config.sh && /usr/bin/start-dbus.sh && /usr/bin/nqptp & shairport-sync -c /etc/shairport-sync.conf"]
+CMD ["/bin/sh", "-c", "\
+/apply-config.sh && \
+/start-dbus.sh && \
+nqptp & \
+sleep 1 && \
+exec shairport-sync -c /etc/shairport-sync.conf \
+"]
