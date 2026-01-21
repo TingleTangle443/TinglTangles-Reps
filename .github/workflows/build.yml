@@ -1,3 +1,4 @@
+# .github/workflows/build.yml
 name: Build Home Assistant Add-on
 
 on:
@@ -22,8 +23,8 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Add-on
+      - name: Build Add-ons (all)
         uses: home-assistant/builder@2024.03.5
         with:
           args: |
-            --addon=airplay2
+            --all
