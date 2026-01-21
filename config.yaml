@@ -1,23 +1,20 @@
-name: "AirPlay 2 (ALSA + MQTT)"
-description: "AirPlay 2 receiver for Home Assistant using shairport-sync with ALSA and MQTT"
+name: "AirPlay 2 for Home Assistant"
+description: "AirPlay 2 receiver using shairport-sync (ALSA + MQTT)"
 version: "dev"
 slug: "airplay2"
-url: "https://github.com/tingletangle443/airplay2"
 init: false
 
 arch:
   - armv7
   - aarch64
 
-boot: manual
+boot: auto
 host_network: true
 audio: true
 
 options:
   airplay_name: "Home Assistant AirPlay"
-  alsa_device: "hw:1,0"
-  latency: 88200
-  interpolation: "soxr"
+  alsa_device: "hw:0,0"
   mqtt_host: "core-mosquitto"
   mqtt_port: 1883
   mqtt_username: ""
@@ -27,12 +24,10 @@ options:
 schema:
   airplay_name: str
   alsa_device: str
-  latency: int
-  interpolation: str
   mqtt_host: str
   mqtt_port: int
   mqtt_username: str?
   mqtt_password: password?
   mqtt_topic: str
 
-image: "ghcr.io/tingletangle443/airplay2-{arch}
+image: "ghcr.io/tingletangle443/airplay2-{arch}"
