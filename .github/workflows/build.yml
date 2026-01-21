@@ -24,7 +24,9 @@ jobs:
 
       - name: Build Add-on
         uses: home-assistant/builder@2024.03.5
+        me-assistant/builder@2024.03.5
         with:
           args: |
-            --addon airplay2
-            --target aarch64
+            --all
+            --target /data/airplay
+            
