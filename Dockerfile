@@ -5,7 +5,6 @@ FROM debian:bullseye AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# ---- Build Dependencies (vollständig, geprüft) ----
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     build-essential \
@@ -20,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     bison \
     xxd \
     \
-    # pthread (KRITISCH für nqptp!)
+    # pthread (nqptp benötigt das)
     libc6-dev \
     libpthread-stubs0-dev \
     \
@@ -57,11 +56,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
  && rm -rf /var/lib/apt/lists/*
 
-# -------- nqptp (AirPlay 2 Timing) --------
+# -------- nqptp (SYSTEMD AUSGESCHALTET – WICHTIG!) --------
 RUN git clone https://github.com/mikebrady/nqptp.git \
  && cd nqptp \
  && autoreconf -fi \
- && ./configure --prefix=/usr/local \
+ && ./configure --prefix=/usr/local --without-systemd \
  && make \
  && make install
 
@@ -108,17 +107,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dbus \
  && rm -rf /var/lib/apt/lists/*
 
-# ---- Binaries ----
 COPY --from=builder /usr/local/bin/nqptp /usr/local/bin/nqptp
 COPY --from=builder /usr/local/bin/shairport-sync /usr/local/bin/shairport-sync
 
-# ---- Config & Scripts ----
 COPY apply-config.sh /apply-config.sh
 COPY start-dbus.sh /start-dbus.sh
 
 RUN chmod +x /apply-config.sh /start-dbus.sh
 
-# ---- Start (KEIN & , KEIN Race Condition) ----
 CMD ["/bin/sh", "-c", "\
 /apply-config.sh && \
 /start-dbus.sh && \
