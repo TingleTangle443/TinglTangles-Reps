@@ -1,6 +1,6 @@
 name: "AirPlay 2 for Home Assistant"
 description: "AirPlay 2 receiver using shairport-sync (ALSA + MQTT)"
-version: "dev-0.5"
+version: "1.0.0-dev"
 slug: "airplay2"
 init: false
 
